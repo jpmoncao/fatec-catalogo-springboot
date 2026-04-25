@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Catálogo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+
+    <aside th:fragment="sidebar" class="sidebar" aria-label="Navegação principal">
+        <div class="sidebar__brand">
+            <a th:href="@{/painel}" class="sidebar__brand-link">Catálogo</a>
+            <span class="sidebar__brand-badge">FATEC</span>
+        </div>
+
+        <nav class="sidebar__nav">
+            <a th:href="@{/painel}" class="sidebar-link" th:classappend="${navArea == 'painel'} ? ' is-active'">
+                Painel
+            </a>
+
+            <div class="sidebar-group">
+                <div class="sidebar-group__label">Produtos</div>
+                <a th:href="@{/produtos}" class="sidebar-link sidebar-link--sub"
+                    th:classappend="${navArea == 'produtos' and (navProdutosSub == 'lista' or navProdutosSub == 'editar')} ? ' is-active'">
+                    Listar
+                </a>
+                <a th:href="@{/produtos/novo}" sec:authorize="hasRole('ADMIN')" class="sidebar-link sidebar-link--sub"
+                    th:classappend="${navArea == 'produtos' and navProdutosSub == 'novo'} ? ' is-active'">
+                    Novo produto
+                </a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-group__label">Categorias</div>
+                <a th:href="@{/categorias}" class="sidebar-link sidebar-link--sub"
+                    th:classappend="${navArea == 'categorias' and (navCategoriasSub == 'lista' or navCategoriasSub == 'editar')} ? ' is-active'">
+                    Listar
+                </a>
+                <a th:href="@{/categorias/novo}" sec:authorize="hasRole('ADMIN')" class="sidebar-link sidebar-link--sub"
+                    th:classappend="${navArea == 'categorias' and navCategoriasSub == 'novo'} ? ' is-active'">
+                    Nova categoria
+                </a>
+            </div>
+
+            <div class="sidebar-group" sec:authorize="hasRole('ADMIN')">
+                <div class="sidebar-group__label">Administração</div>
+                <a th:href="@{/cadastro-usuario}" class="sidebar-link sidebar-link--sub"
+                    th:classappend="${navArea == 'usuarios'} ? ' is-active'">
+                    Cadastrar usuário
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <header th:fragment="mainTopbar" class="main-topbar">
+        <div class="main-topbar__inner">
+            <div class="main-topbar__spacer" aria-hidden="true"></div>
+            <div class="main-topbar__user" sec:authorize="isAuthenticated()">
+                <span class="main-topbar__name" th:text="${nomeUsuarioExibicao}">Usuário</span>
+                <form th:action="@{/logout}" method="post" class="main-topbar__logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn--outline btn--sm">Sair</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <header th:fragment="contentHeader (title, desc)" class="content-header">
+        <div class="content-header__inner">
+            <h1 class="content-header__title" th:text="${title}">Título</h1>
+            <p class="content-header__desc" th:if="${desc != null and !#strings.isEmpty(desc)}" th:text="${desc}"></p>
+        </div>
+    </header>
+
+    <nav th:fragment="topnav" class="topnav topnav--legacy">
+        <a class="topnav__brand" th:href="@{/painel}">FATEC — Catálogo</a>
+    </nav>
+</body>
+
+</html>

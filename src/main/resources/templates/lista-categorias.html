@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Categorias — Catálogo')}">
+    <title>Categorias</title>
+</head>
+
+<body class="app-body">
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+    <div class="app-shell__main"
+         th:with="listaDesc='Busque por nome e consulte as famílias de produtos.'">
+        <header th:replace="~{fragments/layout :: mainTopbar}"></header>
+        <header th:replace="~{fragments/layout :: contentHeader('Categorias', ${listaDesc})}"></header>
+
+        <main class="page page--wide">
+            <div class="toolbar">
+                <h2 class="toolbar__title toolbar__title--section">Lista</h2>
+                <form class="toolbar__search" method="get" th:action="@{/categorias}">
+                    <label for="busca">Buscar</label>
+                    <input id="busca" type="text" name="busca" placeholder="Nome da categoria…" th:value="${busca}">
+                    <button type="submit" class="btn btn--ghost btn--sm">Filtrar</button>
+                </form>
+            </div>
+
+            <div th:if="${erro}" class="alert alert--error">
+                <span th:text="${erro}"></span>
+            </div>
+
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th sec:authorize="hasRole('ADMIN')">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${categorias}">
+                            <td th:text="${c.nome}"></td>
+                            <td class="actions" sec:authorize="hasRole('ADMIN')">
+                                <a class="btn btn--primary btn--sm"
+                                   th:href="@{/categorias/editar/{id}(id=${c.idCategoria})}">Editar</a>
+                                <a class="btn btn--danger btn--sm"
+                                   th:href="@{/categorias/excluir/{id}(id=${c.idCategoria})}"
+                                   onclick="return confirm('Deseja realmente excluir esta categoria?');">Remover</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+
+</html>

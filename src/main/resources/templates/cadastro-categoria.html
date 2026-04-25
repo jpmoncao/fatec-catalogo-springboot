@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Categoria — Catálogo')}">
+    <title>Categoria</title>
+</head>
+
+<body class="app-body">
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+    <div class="app-shell__main"
+         th:with="pageTitle=${categoria.idCategoria != null} ? 'Editar categoria' : 'Nova categoria',
+                  formDesc=${categoria.idCategoria != null} ? 'Atualize o nome da categoria.' : 'Defina um nome único para agrupar produtos.'">
+        <header th:replace="~{fragments/layout :: mainTopbar}"></header>
+        <header th:replace="~{fragments/layout :: contentHeader(${pageTitle}, ${formDesc})}"></header>
+
+        <main class="page page--narrow">
+            <div class="card">
+                <div class="card__header">
+                    <h2 class="card__heading">Formulário</h2>
+                </div>
+                <div class="card__body">
+                    <form th:action="@{/categorias/salvar}" method="post" th:object="${categoria}">
+                        <input type="hidden" th:field="*{idCategoria}" th:if="${categoria.idCategoria != null}">
+                        <div class="field">
+                            <label for="nome">Nome da categoria</label>
+                            <input type="text" th:field="*{nome}" id="nome" placeholder="Digite o nome" required>
+                        </div>
+                        <div th:if="${erro}" class="alert alert--error">
+                            <span th:text="${erro}"></span>
+                        </div>
+                        <div th:if="${#fields.hasErrors('nome')}" class="field-error" th:errors="*{nome}"></div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn--success">Salvar categoria</button>
+                            <a th:href="@{/categorias}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+
+</html>

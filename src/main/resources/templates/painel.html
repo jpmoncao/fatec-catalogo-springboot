@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Painel — Catálogo')}">
+    <title>Painel</title>
+</head>
+
+<body class="app-body">
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+    <div class="app-shell__main"
+         th:with="painelDesc='Acesse produtos, categorias e administração pelo menu lateral ou pelos atalhos abaixo.'">
+        <header th:replace="~{fragments/layout :: mainTopbar}"></header>
+        <header th:replace="~{fragments/layout :: contentHeader('Painel de controle', ${painelDesc})}"></header>
+
+        <main class="page page--wide">
+            <div class="dashboard-grid">
+                <section class="dash-card">
+                    <div class="dash-card__header">
+                        <h2 class="dash-card__title">Produtos</h2>
+                        <p class="dash-card__subtitle">Itens do catálogo, preços e datas de cadastro.</p>
+                    </div>
+                    <div class="dash-card__body">
+                        <nav class="dash-card__nav" aria-label="Ações de produtos">
+                            <a class="dash-card__link" th:href="@{/produtos}">
+                                <span class="dash-card__link-title">Ver todos os produtos</span>
+                                <span class="dash-card__link-hint">Lista com busca por nome</span>
+                            </a>
+                            <a class="dash-card__link" th:href="@{/produtos/novo}" sec:authorize="hasRole('ADMIN')">
+                                <span class="dash-card__link-title">Cadastrar produto</span>
+                                <span class="dash-card__link-hint">Nome, preço e categoria</span>
+                            </a>
+                        </nav>
+                    </div>
+                </section>
+
+                <section class="dash-card">
+                    <div class="dash-card__header">
+                        <h2 class="dash-card__title">Categorias</h2>
+                        <p class="dash-card__subtitle">Organize os produtos por tipo ou família.</p>
+                    </div>
+                    <div class="dash-card__body">
+                        <nav class="dash-card__nav" aria-label="Ações de categorias">
+                            <a class="dash-card__link" th:href="@{/categorias}">
+                                <span class="dash-card__link-title">Ver todas as categorias</span>
+                                <span class="dash-card__link-hint">Lista com busca por nome</span>
+                            </a>
+                            <a class="dash-card__link" th:href="@{/categorias/novo}" sec:authorize="hasRole('ADMIN')">
+                                <span class="dash-card__link-title">Cadastrar categoria</span>
+                                <span class="dash-card__link-hint">Apenas o nome da categoria</span>
+                            </a>
+                        </nav>
+                    </div>
+                </section>
+
+                <section class="dash-card dash-card--accent" sec:authorize="hasRole('ADMIN')">
+                    <div class="dash-card__header">
+                        <h2 class="dash-card__title">Administração</h2>
+                        <p class="dash-card__subtitle">Usuários e perfis de acesso.</p>
+                    </div>
+                    <div class="dash-card__body">
+                        <nav class="dash-card__nav" aria-label="Ações administrativas">
+                            <a class="dash-card__link" th:href="@{/cadastro-usuario}">
+                                <span class="dash-card__link-title">Cadastrar usuário</span>
+                                <span class="dash-card__link-hint">Login, e-mail e perfil</span>
+                            </a>
+                        </nav>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

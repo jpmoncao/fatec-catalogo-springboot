@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Catálogo de produtos')}">
+    <title>Produtos</title>
+</head>
+
+<body class="app-body">
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+    <div class="app-shell__main"
+         th:with="listaDesc='Busque por nome e consulte preços e categorias dos itens.'">
+        <header th:replace="~{fragments/layout :: mainTopbar}"></header>
+        <header th:replace="~{fragments/layout :: contentHeader('Produtos', ${listaDesc})}"></header>
+
+        <main class="page page--wide">
+            <div class="toolbar">
+                <h2 class="toolbar__title toolbar__title--section">Lista</h2>
+                <form class="toolbar__search" method="get" th:action="@{/produtos}">
+                    <label for="busca">Buscar</label>
+                    <input id="busca" type="text" name="busca" placeholder="Nome do produto…" th:value="${busca}">
+                    <label for="idCategoria">Categoria</label>
+                    <select id="idCategoria" name="idCategoria">
+                        <option value="" th:selected="${idCategoria == null}">Todas</option>
+                        <option th:each="c : ${categorias}"
+                                th:value="${c.idCategoria}"
+                                th:selected="${idCategoria != null and idCategoria == c.idCategoria}"
+                                th:text="${c.nome}">
+                        </option>
+                    </select>
+                    <button type="submit" class="btn btn--ghost btn--sm">Filtrar</button>
+                </form>
+            </div>
+
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th sec:authorize="hasRole('ADMIN')">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${produtos}">
+                            <td th:text="${p.nome}"></td>
+                            <td th:text="${p.categoria != null} ? ${p.categoria.nome} : '—'"></td>
+                            <td class="price" th:text="${p.valor}" th:classappend="${p.valor > 1000 ? 'price--high' : ''}">
+                            </td>
+                            <td
+                                th:text="${p.dataCadastro != null} ? ${#temporals.format(p.dataCadastro, 'dd/MM/yyyy HH:mm')} : ''">
+                            </td>
+                            <td class="actions" sec:authorize="hasRole('ADMIN')">
+                                <a class="btn btn--primary btn--sm"
+                                   th:href="@{/produtos/editar/{id}(id=${p.idProduto})}">Editar</a>
+                                <a class="btn btn--danger btn--sm"
+                                   th:href="@{/produtos/excluir/{id}(id=${p.idProduto})}"
+                                   onclick="return confirm('Deseja realmente excluir?');">Remover</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+
+</html>
